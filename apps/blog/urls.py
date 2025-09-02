@@ -15,4 +15,9 @@ urlpatterns = [
         views.PostRetrieveUpdateDestroyAPIView.as_view(),
         name="post-detail",
     ),
+    path(
+        "posts/<slug:slug>/comments/",
+        views.CommentListCreateAPIView.as_view(),
+        name="comment-list-create",
+    ),
 ]

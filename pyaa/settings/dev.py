@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
     "django_q",
     "django_translation_flags",
     "localflavor",
+    "meta",
 ]
 
 PROJECT_APPS = [

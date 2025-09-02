@@ -40,10 +40,3 @@ def webhook_stripe_view(request):
     return webhook_data["response"]
 
 
-urlpatterns = [
-    path(
-        "shop/webhook/stripe/",
-        webhook_stripe_view,
-        name="shop_webhook_stripe",
-    ),
-]

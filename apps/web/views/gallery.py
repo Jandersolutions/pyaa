@@ -80,8 +80,3 @@ def gallery_by_tag_view(request, gallery_tag):
     )
 
 
-urlpatterns = [
-    path("gallery/", gallery_index_view, name="gallery_index"),
-    path("gallery/i/<int:gallery_id>/", gallery_by_id_view, name="gallery_by_id"),
-    path("gallery/t/<slug:gallery_tag>/", gallery_by_tag_view, name="gallery_by_tag"),
-]

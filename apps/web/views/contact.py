@@ -26,10 +26,3 @@ def contact_index_view(request):
     )
 
 
-urlpatterns = [
-    path(
-        "contact/",
-        contact_index_view,
-        name="contact_index",
-    ),
-]

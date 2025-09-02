@@ -17,10 +17,3 @@ def home_index_view(request):
     )
 
 
-urlpatterns = [
-    path(
-        "",
-        home_index_view,
-        name="home",
-    ),
-]

@@ -32,15 +32,3 @@ def newsletter_success_view(request):
     )
 
 
-urlpatterns = [
-    path(
-        "newsletter/subscribe/",
-        newsletter_subscribe_view,
-        name="newsletter_subscribe",
-    ),
-    path(
-        "newsletter/success/",
-        newsletter_success_view,
-        name="newsletter_success",
-    ),
-]

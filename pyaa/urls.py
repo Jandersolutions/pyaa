@@ -61,6 +61,10 @@ urlpatterns = [
         include("apps.blog.urls", namespace="blog"),
     ),
     path(
+        "api/admin/blog/",
+        include("apps.blog.admin_urls", namespace="blog_admin"),
+    ),
+    path(
         "api/token/",
         TokenObtainPairView.as_view(),
         name="token-obtain-pair",

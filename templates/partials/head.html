@@ -11,6 +11,9 @@
 <meta name="keywords" content="{% if page_keywords %}{{ page_keywords }}{% else %}{% translate 'site.keywords' %}{% endif %}">
 <meta name="author" content="{% if page_author %}{{ page_author }}{% else %}{% translate 'site.author' %}{% endif %}">
 
+<!-- Meta -->
+{% include "meta/meta.html" %}
+
 <!-- Title -->
 <title>{% if page_title %}{{ page_title }}{% else %}{% translate 'site.name' %}{% endif %}</title>
 

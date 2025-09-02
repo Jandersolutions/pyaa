@@ -58,6 +58,9 @@ mkdocs==1.6.0
 mkdocs-material==9.5.26
 mkdocs-with-pdf==0.9.3
 
+# SEO
+django-meta==2.5.0
+
 # chart
 matplotlib==3.10.5
 

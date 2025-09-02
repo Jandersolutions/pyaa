@@ -43,15 +43,3 @@ def track_click_access(request):
     return JsonResponse({"success": tracked})
 
 
-urlpatterns = [
-    path(
-        "banner/track-view-access/",
-        track_view_access,
-        name="banner_track_view_access",
-    ),
-    path(
-        "banner/track-click-access/",
-        track_click_access,
-        name="banner_track_click_access",
-    ),
-]

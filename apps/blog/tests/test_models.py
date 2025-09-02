@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from apps.blog.models import Category, Post, Tag
+from apps.blog.models import Category, Comment, Post, Tag
 from apps.shop.models import Product
 
 
@@ -72,3 +72,33 @@ class PostModelTest(TestCase):
         )
         post.products.add(self.product)
         self.assertIn(self.product, post.products.all())
+
+
+class CommentModelTest(TestCase):
+    """Test suite for the Comment model."""
+
+    def setUp(self):
+        """Set up the test case."""
+        self.user = get_user_model().objects.create_user(
+            username="commenter",
+            email="commenter@example.com",
+            password="password",
+        )
+        self.post = Post.objects.create(
+            title="Post for Comments",
+            slug="post-for-comments",
+            author=self.user,
+        )
+
+    def test_can_create_comment(self):
+        """Test that a Comment can be created."""
+        comment = Comment.objects.create(
+            post=self.post,
+            author=self.user,
+            content="This is a test comment.",
+        )
+        self.assertEqual(comment.post, self.post)
+        self.assertEqual(comment.author, self.user)
+        self.assertEqual(comment.content, "This is a test comment.")
+        self.assertFalse(comment.is_approved)
+        self.assertIsNotNone(comment.created_at)

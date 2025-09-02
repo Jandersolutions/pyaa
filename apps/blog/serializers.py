@@ -1,6 +1,17 @@
 from rest_framework import serializers
 
-from .models import Category, Post, Product, Tag
+from .models import Category, Comment, Post, Product, Tag
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """Serializer for the Comment model."""
+
+    author = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ("id", "author", "content", "created_at")
+        read_only_fields = ("author",)
 
 
 class PostSerializer(serializers.ModelSerializer):

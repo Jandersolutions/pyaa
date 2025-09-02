@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.blog.models import Category, Post, Tag
+from apps.blog.models import Category, Comment, Post, Tag
 from apps.shop.models import Product
 
 
@@ -122,6 +122,109 @@ class BlogAPITest(APITestCase):
         )
         self.client.force_authenticate(user=other_user)
         url = reverse("blog:post-detail", kwargs={"slug": self.post1.slug})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class CommentAPITest(APITestCase):
+    """Test suite for the comment API."""
+
+    def setUp(self):
+        """Set up the test case."""
+        self.user = get_user_model().objects.create_user(
+            username="commenter",
+            email="commenter@example.com",
+            password="password",
+        )
+        self.post_author = get_user_model().objects.create_user(
+            username="postauthor",
+            email="author@example.com",
+            password="password",
+        )
+        self.post = Post.objects.create(
+            title="Post for Comments",
+            slug="post-for-comments",
+            author=self.post_author,
+        )
+
+    def test_create_comment(self):
+        """Test that the API can create a comment."""
+        self.client.force_authenticate(user=self.user)
+        url = reverse("blog:comment-list-create", kwargs={"slug": self.post.slug})
+        data = {"content": "This is a new comment."}
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(self.post.comments.count(), 1)
+        comment = self.post.comments.first()
+        self.assertEqual(comment.author, self.user)
+        self.assertFalse(comment.is_approved)
+
+    def test_list_comments(self):
+        """Test that the API can list approved comments for a post."""
+        Comment.objects.create(
+            post=self.post, author=self.user, content="Approved comment.", is_approved=True
+        )
+        Comment.objects.create(
+            post=self.post, author=self.user, content="Unapproved comment."
+        )
+        url = reverse("blog:comment-list-create", kwargs={"slug": self.post.slug})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["content"], "Approved comment.")
+
+    def test_admin_can_approve_comment(self):
+        """Test that an admin can approve a comment."""
+        admin_user = get_user_model().objects.create_superuser(
+            username="adminuser", email="admin@example.com", password="password"
+        )
+        comment = Comment.objects.create(
+            post=self.post, author=self.user, content="Awaiting approval."
+        )
+        self.client.force_authenticate(user=admin_user)
+        url = reverse("blog_admin:comment-approve", kwargs={"pk": comment.pk})
+        response = self.client.put(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        comment.refresh_from_db()
+        self.assertTrue(comment.is_approved)
+
+    def test_non_admin_cannot_approve_comment(self):
+        """Test that a non-admin user cannot approve a comment."""
+        comment = Comment.objects.create(
+            post=self.post, author=self.user, content="Awaiting approval."
+        )
+        self.client.force_authenticate(user=self.user)
+        url = reverse("blog_admin:comment-approve", kwargs={"pk": comment.pk})
+        response = self.client.put(url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admin_can_delete_comment(self):
+        """Test that an admin can delete a comment."""
+        admin_user = get_user_model().objects.create_superuser(
+            username="adminuser", email="admin@example.com", password="password"
+        )
+        comment = Comment.objects.create(
+            post=self.post, author=self.user, content="A comment to delete."
+        )
+        self.client.force_authenticate(user=admin_user)
+        url = reverse("blog_admin:comment-delete", kwargs={"pk": comment.pk})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Comment.objects.count(), 0)
+
+    def test_non_admin_cannot_delete_comment(self):
+        """Test that a non-admin user cannot delete a comment."""
+        comment = Comment.objects.create(
+            post=self.post, author=self.user, content="A comment to delete."
+        )
+        self.client.force_authenticate(user=self.user)
+        url = reverse("blog_admin:comment-delete", kwargs={"pk": comment.pk})
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

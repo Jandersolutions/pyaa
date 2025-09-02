@@ -63,20 +63,3 @@ def content_by_tag_view(request, content_tag):
     )
 
 
-urlpatterns = [
-    path(
-        "c/<slug:category_tag>/",
-        contents_index_view,
-        name="contents_index_view",
-    ),
-    path(
-        "c/i/<int:content_id>/",
-        content_by_id_view,
-        name="content_by_id",
-    ),
-    path(
-        "c/t/<slug:content_tag>/",
-        content_by_tag_view,
-        name="content_by_tag",
-    ),
-]

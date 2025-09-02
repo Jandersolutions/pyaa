@@ -1,5 +1,7 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from meta.models import ModelMeta
 
 from apps.shop.models import Product
 
@@ -50,7 +52,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Post(models.Model):
+class Post(ModelMeta, models.Model):
     """A model for blog posts."""
 
     title = models.CharField(
@@ -64,6 +66,12 @@ class Post(models.Model):
     )
     content = models.TextField(
         _("content"),
+    )
+    description = models.TextField(
+        _("description"),
+        blank=True,
+        null=True,
+        help_text=_("A short description for SEO."),
     )
     author = models.ForeignKey(
         "user.User",
@@ -105,5 +113,54 @@ class Post(models.Model):
         verbose_name_plural = _("posts")
         ordering = ["-created_at"]
 
+    _metadata = {
+        "title": "title",
+        "description": "description",
+        "keywords": "get_tags",
+        "url": "get_absolute_url",
+    }
+
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("blog:post-detail", kwargs={"slug": self.slug})
+
+    def get_tags(self):
+        return [tag.name for tag in self.tags.all()]
+
+
+class Comment(models.Model):
+    """A model for blog post comments."""
+
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name=_("post"),
+    )
+    author = models.ForeignKey(
+        "user.User",
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name=_("author"),
+    )
+    content = models.TextField(
+        _("content"),
+    )
+    is_approved = models.BooleanField(
+        _("is approved"),
+        default=False,
+    )
+    created_at = models.DateTimeField(
+        _("created at"),
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = _("comment")
+        verbose_name_plural = _("comments")
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"Comment by {self.author} on {self.post}"

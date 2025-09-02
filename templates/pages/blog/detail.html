@@ -1,0 +1,29 @@
+{% extends "layouts/base_page.html" %}
+{% load i18n %}
+
+{% block title %}{{ post.title }} - {% translate 'site.name' %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <article>
+                <header class="mb-4">
+                    <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                    <div class="text-muted fst-italic mb-2">
+                        {% blocktranslate with author=post.author.get_full_name date=post.created_at|date:"d/m/Y" %}
+                            Posted on {{ date }} by {{ author }}
+                        {% endblocktranslate %}
+                    </div>
+                    {% if post.category %}
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ post.category }}</a>
+                    {% endif %}
+                </header>
+                <section class="mb-5">
+                    {{ post.content|safe }}
+                </section>
+            </article>
+        </div>
+    </div>
+</div>
+{% endblock %}
