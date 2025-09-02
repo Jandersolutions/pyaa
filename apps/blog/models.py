@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.shop.models import Product
+
 
 class Category(models.Model):
     """A model for blog post categories."""
@@ -81,6 +83,12 @@ class Post(models.Model):
         Tag,
         related_name="posts",
         verbose_name=_("tags"),
+        blank=True,
+    )
+    products = models.ManyToManyField(
+        Product,
+        related_name="posts",
+        verbose_name=_("products"),
         blank=True,
     )
     created_at = models.DateTimeField(

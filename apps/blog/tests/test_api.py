@@ -3,7 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.blog.models import Category, Post
+from apps.blog.models import Category, Post, Tag
+from apps.shop.models import Product
 
 
 class BlogAPITest(APITestCase):
@@ -17,6 +18,10 @@ class BlogAPITest(APITestCase):
             password="password",
         )
         self.category = Category.objects.create(name="Tech", slug="tech")
+        self.tag = Tag.objects.create(name="Python", slug="python")
+        self.product = Product.objects.create(
+            name="Test Product", price=10.00, currency="USD"
+        )
         self.post1 = Post.objects.create(
             title="Post 1",
             slug="post-1",
@@ -45,9 +50,78 @@ class BlogAPITest(APITestCase):
 
     def test_retrieve_post(self):
         """Test that the API can retrieve a single post."""
+        self.post1.products.add(self.product)
         url = reverse("blog:post-detail", kwargs={"slug": self.post1.slug})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], self.post1.title)
         self.assertEqual(response.data["slug"], self.post1.slug)
+        self.assertIn(self.product.id, response.data["products"])
+
+    def test_create_post(self):
+        """Test that the API can create a post."""
+        self.client.force_authenticate(user=self.user)
+        url = reverse("blog:post-list")
+        self.tag2 = Tag.objects.create(name="Testing", slug="testing")
+        data = {
+            "title": "New Post",
+            "slug": "new-post",
+            "content": "Some content.",
+            "category": self.category.id,
+            "tags": [self.tag.id, self.tag2.id],
+            "products": [self.product.id],
+        }
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Post.objects.count(), 3)
+        self.assertEqual(response.data["title"], "New Post")
+        self.assertIn(self.product.id, response.data["products"])
+
+    def test_update_post(self):
+        """Test that the API can update a post."""
+        self.client.force_authenticate(user=self.user)
+        url = reverse("blog:post-detail", kwargs={"slug": self.post1.slug})
+        data = {"title": "Updated Title", "content": "Updated content."}
+        response = self.client.patch(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.post1.refresh_from_db()
+        self.assertEqual(self.post1.title, "Updated Title")
+
+    def test_unauthorized_user_cannot_update_post(self):
+        """Test that an unauthorized user cannot update a post."""
+        other_user = get_user_model().objects.create_user(
+            username="otheruser",
+            email="other@example.com",
+            password="password",
+        )
+        self.client.force_authenticate(user=other_user)
+        url = reverse("blog:post-detail", kwargs={"slug": self.post1.slug})
+        data = {"title": "Updated Title"}
+        response = self.client.patch(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_post(self):
+        """Test that the API can delete a post."""
+        self.client.force_authenticate(user=self.user)
+        url = reverse("blog:post-detail", kwargs={"slug": self.post1.slug})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Post.objects.count(), 1)
+
+    def test_unauthorized_user_cannot_delete_post(self):
+        """Test that an unauthorized user cannot delete a post."""
+        other_user = get_user_model().objects.create_user(
+            username="otheruser",
+            email="other@example.com",
+            password="password",
+        )
+        self.client.force_authenticate(user=other_user)
+        url = reverse("blog:post-detail", kwargs={"slug": self.post1.slug})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

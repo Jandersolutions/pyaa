@@ -7,12 +7,12 @@ app_name = "blog"
 urlpatterns = [
     path(
         "posts/",
-        views.PostListAPIView.as_view(),
+        views.PostListCreateAPIView.as_view(),
         name="post-list",
     ),
     path(
         "posts/<slug:slug>/",
-        views.PostRetrieveAPIView.as_view(),
+        views.PostRetrieveUpdateDestroyAPIView.as_view(),
         name="post-detail",
     ),
 ]

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from apps.blog.models import Category, Post, Tag
+from apps.shop.models import Product
 
 
 class CategoryModelTest(TestCase):
@@ -38,6 +39,11 @@ class PostModelTest(TestCase):
         )
         self.category = Category.objects.create(name="Tech", slug="tech")
         self.tag = Tag.objects.create(name="Python", slug="python")
+        self.product = Product.objects.create(
+            name="Test Product",
+            price=10.00,
+            currency="USD",
+        )
 
     def test_can_create_post(self):
         """Test that a Post can be created."""
@@ -56,3 +62,13 @@ class PostModelTest(TestCase):
         self.assertEqual(post.category, self.category)
         self.assertIn(self.tag, post.tags.all())
         self.assertEqual(str(post), "My First Post")
+
+    def test_post_can_have_products(self):
+        """Test that a Post can be associated with products."""
+        post = Post.objects.create(
+            title="Post with Product",
+            slug="post-with-product",
+            author=self.user,
+        )
+        post.products.add(self.product)
+        self.assertIn(self.product, post.products.all())
