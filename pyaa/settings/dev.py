@@ -14,6 +14,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from decouple import Csv, config
+from dj_database_url import parse as db_url
 from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
 
@@ -28,20 +30,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # General
 
-DEBUG = True
-SECRET_KEY = "myapp-secret-key"
+DEBUG = config("DEBUG", default=False, cast=bool)
+SECRET_KEY = config("SECRET_KEY")
 
 # Hosts
 
-ALLOWED_HOSTS = ["*"]
-
-csrf_trusted_origins = os.getenv("APP_CSRF_TRUSTED_ORIGINS")
-if csrf_trusted_origins:
-    CSRF_TRUSTED_ORIGINS = csrf_trusted_origins.split(",")
-
-allowed_hosts = os.getenv("APP_ALLOWED_HOSTS")
-if allowed_hosts:
-    ALLOWED_HOSTS = allowed_hosts.split(",")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=Csv())
 
 # Application definition
 
@@ -136,13 +131,11 @@ WSGI_APPLICATION = "pyaa.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db" / "db.sqlite3",
-        "TEST": {
-            "NAME": BASE_DIR / "db" / "db-test.sqlite3",
-        },
-    }
+    "default": config(
+        "DATABASE_URL",
+        default="sqlite:///" + os.path.join(BASE_DIR, "db", "db.sqlite3"),
+        cast=db_url,
+    )
 }
 
 # Cache
@@ -290,10 +283,10 @@ STORAGES = {
     "s3": {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {
-            "access_key": os.getenv("AWS_ACCESS_KEY_ID"),
-            "secret_key": os.getenv("AWS_SECRET_ACCESS_KEY"),
-            "bucket_name": os.getenv("AWS_S3_BUCKET_NAME"),
-            "region_name": os.getenv("AWS_REGION"),
+            "access_key": config("AWS_ACCESS_KEY_ID", default=None),
+            "secret_key": config("AWS_SECRET_ACCESS_KEY", default=None),
+            "bucket_name": config("AWS_S3_BUCKET_NAME", default=None),
+            "region_name": config("AWS_REGION", default=None),
             "default_acl": "public-read",
             "querystring_auth": False,
         },
@@ -302,7 +295,7 @@ STORAGES = {
 
 # Media
 
-MEDIA_URL = os.getenv("APP_MEDIA_URL", "/media/")
+MEDIA_URL = config("APP_MEDIA_URL", default="/media/")
 MEDIA_ROOT = BASE_DIR / "media"
 
 # Editor
@@ -343,9 +336,11 @@ LOGIN_URL = "account_login"
 
 # Email
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "webmaster@localhost"
-DEFAULT_TO_EMAIL = "webmaster@localhost"
+EMAIL_BACKEND = config(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="webmaster@localhost")
+DEFAULT_TO_EMAIL = config("DEFAULT_TO_EMAIL", default="webmaster@localhost")
 
 # Logging
 
@@ -359,15 +354,14 @@ LOGGING = {
         },
     },
     "handlers": {
-        "file": {
+        "console": {
             "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": BASE_DIR / "logs" / "debug.log",
+            "class": "logging.StreamHandler",
             "formatter": "verbose",
-        },
+        }
     },
     "root": {
-        "handlers": ["file"],
+        "handlers": ["console"],
         "level": "DEBUG",
     },
 }
@@ -379,13 +373,13 @@ CUSTOMER_ACTIVATION_REQUIRED = False
 
 # Stripe
 
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
-STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET", default="")
 
 # Recaptcha
 
-RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY", "")
-RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", "")
+RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
+RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")
 
 # Django Q
 
