@@ -1,0 +1,45 @@
+site_name: PyAA - Python Advanced Application
+site_author: Paulo Coutinho
+site_description: Documentação completa para a aplicação PyAA.
+
+theme:
+  name: material
+  language: pt
+  palette:
+    - scheme: default
+      primary: "orange"
+      accent: "purple"
+    - scheme: slate
+      primary: "orange"
+      accent: "purple"
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+
+plugins:
+  - search
+  - with-pdf:
+      enabled: true
+
+nav:
+  - 'Início': 'index.md'
+  - 'Guia de Uso':
+    - 'Introdução': 'webapp.md'
+    - 'Configuração do Ambiente': 'production.md'
+    - 'Docker': 'docker.md'
+    - 'Fila de Tarefas': 'queue.md'
+    - 'Tarefas Agendadas (Cron)': 'cron.md'
+  - 'Funcionalidades':
+    - 'API': 'api.md'
+    - 'Blog': 'blog.md' # Placeholder
+    - 'Segurança': 'security.md'
+    - 'Banco de Dados': 'database.md'
+    - 'Stripe': 'stripe.md'
+  - 'Solução de Problemas': 'troubleshooting.md'
+  - 'Desenvolvimento':
+    - 'VSCode': 'vscode.md'
+    - 'Ngrok': 'ngrok.md'

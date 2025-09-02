@@ -7,69 +7,81 @@
     <br>
 </p>
 
-PyAA is a powerful, open-source Python + Django template application designed to build robust web applications with all the essential features pre-built. Whether you need a site, an e-commerce platform, or a SaaS application, PyAA has you covered – for free!
+O PyAA é uma poderosa aplicação de template open-source em Python + Django, projetada para construir aplicações web robustas com todas as funcionalidades essenciais já pré-construídas. Seja para um site, uma plataforma de e-commerce, ou uma aplicação SaaS, o PyAA tem tudo o que você precisa – de graça!
+
+Este projeto foi refatorado para seguir os princípios da [Metodologia 12 Fatores](https://12factor.net/pt_br/), garantindo que a aplicação seja mais portátil, escalável e fácil de manter.
 
 [![Build](https://github.com/paulocoutinhox/pyaa/actions/workflows/build.yml/badge.svg)](https://github.com/paulocoutinhox/pyaa/actions/workflows/build.yml)
 
 [![codecov](https://codecov.io/gh/paulocoutinhox/pyaa/graph/badge.svg?token=KQ1H9SVD4Y)](https://codecov.io/gh/paulocoutinhox/pyaa)
 
-## 🚀 Features
+## 🚀 Funcionalidades
 
-- **User Management** – Handle user registration, login, profile management, account recovery, configurable account activation, and more.
-- **Subscription Management** – Manage user subscriptions by credits or expiration date.
-- **Credit System** – Support for selling and managing user credits.
-- **Checkout System** – Complete payment flow for products and services.
-- **Digital Products** – Sell digital products with secure download links after purchase.
-- **Banner System** – Manage banners with view and click tracking, plus detailed reporting in the admin panel.
-- **Admin Panel** – A fully functional admin dashboard for managing the application.
-- **Admin Reports** – Comprehensive reporting system with interactive tables and graphs for data visualization and analysis.
-- **Newsletter System** – Manage newsletter subscriptions with CSV export functionality from the admin panel.
-- **Theme Selector** – Support for light, dark, and auto theme modes.
-- **Email Integration** – Send transactional emails with ease.
-- **Recaptcha Support** – Enhance security with Recaptcha integration.
-- **Image Gallery** – Manage a gallery of images efficiently.
-- **Static Content Management** – Organize and manage static content across your site.
-- **System Logs** – Comprehensive logging system with multiple levels (debug, info, success, warning, error) and categorization.
-- **Multi-language Support** – Easily handle multiple languages.
-- **Multiple Currency Support** – Process payments in different currencies.
-- **Stripe Integration** – Seamlessly manage subscription payments and one-time purchases through Stripe.
-- **Subscription Plans** – Control and configure different subscription tiers.
-- **Background Queue** – Powered by DjangoQ with worker support for handling asynchronous tasks.
-- **Status Color System** – Visual indicators for various statuses throughout the application.
-- **Cached Paginator** – Optimized pagination for better performance.
-- **Docker Support** – Docker configurations for web application and cron jobs.
-- **Test Coverage** – Over 50% test coverage, ensuring reliability and robustness.
-- **Versatile Use** – Perfect for building websites, e-commerce platforms, or SaaS products.
+- **Gerenciamento de Usuários**: Cadastro, login, gerenciamento de perfil, recuperação de conta, e ativação de conta configurável.
+- **Sistema de Blog**: Uma aplicação de blog completa com API CRUD, categorias, tags e integração com outros módulos.
+- **Integração de Produtos no Blog**: Associe produtos da loja diretamente nos posts do blog.
+- **Gerenciamento de Assinaturas**: Gerencie assinaturas de usuários por créditos ou data de expiração.
+- **Sistema de Créditos**: Suporte para venda e gerenciamento de créditos de usuário.
+- **Sistema de Checkout**: Fluxo de pagamento completo para produtos e serviços.
+- **Produtos Digitais**: Venda de produtos digitais com links de download seguros após a compra.
+- **Sistema de Banners**: Gerencie banners com rastreamento de visualizações e cliques, além de relatórios detalhados no painel de administração.
+- **Painel de Administração Completo**: Um dashboard de administração funcional para gerenciar a aplicação.
+- **Relatórios Administrativos**: Sistema de relatórios abrangente com tabelas e gráficos interativos.
+- **Sistema de Newsletter**: Gerenciamento de inscrições com funcionalidade de exportação em CSV.
+- **Novo Design**: Tipografia inspirada no site do Ubuntu, com o tema "United" do Bootswatch e ícones Font Awesome.
+- **Integração de E-mail**: Envio de e-mails transacionais.
+- **Suporte a Recaptcha**: Aumente a segurança com a integração do Recaptcha.
+- **Galeria de Imagens**: Gerencie uma galeria de imagens de forma eficiente.
+- **Gerenciamento de Conteúdo Estático**: Organize e gerencie conteúdo estático em seu site.
+- **Logs do Sistema**: Sistema de log abrangente com múltiplos níveis e categorização.
+- **Suporte a Múltiplos Idiomas**: Lide facilmente com múltiplos idiomas.
+- **Suporte a Múltiplas Moedas**: Processe pagamentos em diferentes moedas.
+- **Integração com Stripe**: Gerenciamento de pagamentos de assinaturas e compras avulsas através do Stripe.
+- **Fila de Tarefas em Background**: Alimentado por DjangoQ com suporte a workers para tarefas assíncronas.
+- **Suporte a Docker**: Configurações Docker para a aplicação web e para tarefas agendadas (cron).
+- **Alta Cobertura de Testes**: Mais de 50% de cobertura de testes, garantindo confiabilidade e robustez.
 
-## 💻 How To Use
+## 💻 Como Usar
 
-Execute the following commands:
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/paulocoutinhox/pyaa.git
+    cd pyaa
+    ```
 
-```
-make deps
-make setup
-make migrate
-make create-su
-make fixtures
-make run
-```
+2.  **Configure o Ambiente:**
+    Crie um arquivo `.env` a partir do exemplo. Este arquivo conterá suas variáveis de ambiente locais.
+    ```bash
+    cp .env.example .env
+    ```
+    *Você pode customizar as variáveis no arquivo `.env` se necessário.*
 
-## 📚 Documentation
+3.  **Execute os comandos de setup:**
+    ```bash
+    make deps
+    make setup
+    make migrate
+    make create-su
+    make fixtures
+    make run
+    ```
+
+## 📚 Documentação
 
 - [API](docs/api.md)
-- [Database](docs/database.md)
+- [Banco de Dados](docs/database.md)
 - [Docker](docs/docker.md)
 - [Ngrok](docs/ngrok.md)
-- [Production](docs/production.md)
-- [Security](docs/security.md)
+- [Produção](docs/production.md)
+- [Segurança](docs/security.md)
 - [Stripe](docs/stripe.md)
-- [Troubleshooting](docs/troubleshooting.md)
+- [Solução de Problemas](docs/troubleshooting.md)
 - [WebApp](docs/webapp.md)
 - [Cron](docs/cron.md)
-- [Queue](docs/queue.md)
+- [Fila](docs/queue.md)
 - [VSCode](docs/vscode.md)
 
-## 🛡️ License
+## 🛡️ Licença
 
 [MIT](http://opensource.org/licenses/MIT)
 
