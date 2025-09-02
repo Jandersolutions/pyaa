@@ -99,6 +99,10 @@ class Post(ModelMeta, models.Model):
         verbose_name=_("products"),
         blank=True,
     )
+    is_published = models.BooleanField(
+        _("is published"),
+        default=False,
+    )
     created_at = models.DateTimeField(
         _("created at"),
         auto_now_add=True,
@@ -118,16 +122,32 @@ class Post(ModelMeta, models.Model):
         "description": "description",
         "keywords": "get_tags",
         "url": "get_absolute_url",
+        "image": "get_image_url",
+        "schemaorg_type": "Article",
+        "schemaorg_properties": {
+            "name": "title",
+            "description": "description",
+            "author": "get_author_name",
+            "date_published": "created_at",
+            "date_modified": "updated_at",
+        },
     }
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("blog:post-detail", kwargs={"slug": self.slug})
+        return reverse("web:blog_detail", kwargs={"slug": self.slug})
 
     def get_tags(self):
         return [tag.name for tag in self.tags.all()]
+
+    def get_image_url(self):
+        # Placeholder for post image
+        return ""
+
+    def get_author_name(self):
+        return self.author.get_full_name()
 
 
 class Comment(models.Model):

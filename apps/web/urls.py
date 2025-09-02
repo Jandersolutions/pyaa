@@ -3,13 +3,13 @@ from django.urls import path
 from .views import (
     account,
     banner,
-    blog,
     contact,
     content,
     gallery,
     home,
     newsletter,
 )
+from .views.blog import PostDetailView, PostListView
 from .views.shop import shop_web, shop_webhook
 
 app_name = "web"
@@ -17,8 +17,6 @@ app_name = "web"
 urlpatterns = [
     # Home
     path("", home.home_index_view, name="home"),
-    # Blog
-    path("blog/<slug:slug>/", blog.PostDetailView.as_view(), name="blog_detail"),
     # Account
     path("account/signup/", account.account_signup_view, name="account_signup"),
     path("account/login/", account.account_login_view, name="account_login"),
@@ -182,4 +180,7 @@ urlpatterns = [
         newsletter.newsletter_success_view,
         name="newsletter_success",
     ),
+    # Blog
+    path("blog/", PostListView.as_view(), name="blog_list"),
+    path("blog/<slug:slug>/", PostDetailView.as_view(), name="blog_detail"),
 ]

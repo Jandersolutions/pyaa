@@ -55,12 +55,14 @@ class PostModelTest(TestCase):
             category=self.category,
         )
         post.tags.add(self.tag)
+        post.products.add(self.product)
 
         self.assertEqual(post.title, "My First Post")
         self.assertEqual(post.slug, "my-first-post")
         self.assertEqual(post.author, self.user)
         self.assertEqual(post.category, self.category)
         self.assertIn(self.tag, post.tags.all())
+        self.assertIn(self.product, post.products.all())
         self.assertEqual(str(post), "My First Post")
 
     def test_post_can_have_products(self):

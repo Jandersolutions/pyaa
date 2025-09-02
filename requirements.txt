@@ -1,5 +1,6 @@
 # django
 dj-database-url==2.2.0
+python-decouple==3.8
 django==5.2.5
 django-admin-extras==1.0.2
 django-cleanup==9.0.0
@@ -23,7 +24,6 @@ django-localflavor==5.0
 django-ipware==7.0.1
 
 # general
-python-decouple==3.8
 requests==2.32.4
 libsass==0.23.0
 boto3==1.40.6
@@ -54,12 +54,6 @@ coverage==7.10.2
 # formatter
 black==25.1.0
 babel==2.17.0
-mkdocs==1.6.0
-mkdocs-material==9.5.26
-mkdocs-with-pdf==0.9.3
-
-# SEO
-django-meta==2.5.0
 
 # chart
 matplotlib==3.10.5

@@ -38,6 +38,7 @@ SECRET_KEY = config("SECRET_KEY")
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=Csv())
 
+
 # Application definition
 
 DJANGO_APPS = [
@@ -72,7 +73,6 @@ THIRD_PARTY_APPS = [
     "django_q",
     "django_translation_flags",
     "localflavor",
-    "meta",
 ]
 
 PROJECT_APPS = [

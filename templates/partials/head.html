@@ -11,9 +11,6 @@
 <meta name="keywords" content="{% if page_keywords %}{{ page_keywords }}{% else %}{% translate 'site.keywords' %}{% endif %}">
 <meta name="author" content="{% if page_author %}{{ page_author }}{% else %}{% translate 'site.author' %}{% endif %}">
 
-<!-- Meta -->
-{% include "meta/meta.html" %}
-
 <!-- Title -->
 <title>{% if page_title %}{{ page_title }}{% else %}{% translate 'site.name' %}{% endif %}</title>
 
@@ -40,10 +37,8 @@
 <link rel="canonical" href="{% if page_url %}{{ page_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}">
 
 {% compress css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'vendor/magnific-popup/css/magnific-popup.css' %}">
     <link href="{% sass_src 'css/main.scss' %}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 {% endcompress %}
 
 {% compress js %}
