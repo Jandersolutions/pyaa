@@ -1,0 +1,58 @@
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+
+from apps.blog.models import Category, Post, Tag
+
+
+class CategoryModelTest(TestCase):
+    """Test suite for the Category model."""
+
+    def test_can_create_category(self):
+        """Test that a Category can be created with a name and slug."""
+        category = Category.objects.create(name="Tech", slug="tech")
+        self.assertEqual(category.name, "Tech")
+        self.assertEqual(category.slug, "tech")
+        self.assertEqual(str(category), "Tech")
+
+
+class TagModelTest(TestCase):
+    """Test suite for the Tag model."""
+
+    def test_can_create_tag(self):
+        """Test that a Tag can be created with a name and slug."""
+        tag = Tag.objects.create(name="Django", slug="django")
+        self.assertEqual(tag.name, "Django")
+        self.assertEqual(tag.slug, "django")
+        self.assertEqual(str(tag), "Django")
+
+
+class PostModelTest(TestCase):
+    """Test suite for the Post model."""
+
+    def setUp(self):
+        """Set up the test case."""
+        self.user = get_user_model().objects.create_user(
+            username="testuser",
+            email="test@example.com",
+            password="password",
+        )
+        self.category = Category.objects.create(name="Tech", slug="tech")
+        self.tag = Tag.objects.create(name="Python", slug="python")
+
+    def test_can_create_post(self):
+        """Test that a Post can be created."""
+        post = Post.objects.create(
+            title="My First Post",
+            slug="my-first-post",
+            content="This is the content of my first post.",
+            author=self.user,
+            category=self.category,
+        )
+        post.tags.add(self.tag)
+
+        self.assertEqual(post.title, "My First Post")
+        self.assertEqual(post.slug, "my-first-post")
+        self.assertEqual(post.author, self.user)
+        self.assertEqual(post.category, self.category)
+        self.assertIn(self.tag, post.tags.all())
+        self.assertEqual(str(post), "My First Post")
